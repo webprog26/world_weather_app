@@ -8,11 +8,15 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import com.webprog26.worldweatherapp.view_model.WeatherDataViewModel
 import com.webprog26.worldweatherapp.location.LocationProvider
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var weatherDataViewModel: WeatherDataViewModel
 
     companion object {
         private const val ACCESS_COARSE_LOCATION_PERMISSION_REQUEST_CODE = 1000
@@ -28,6 +32,10 @@ class MainActivity : AppCompatActivity() {
         locationProvider.lastKnownLocationData.observe(this) { latLng ->
 
         }
+        weatherDataViewModel = WeatherDataViewModel()
+        weatherDataViewModel.weatherData.observe(this) { weatherData ->
+            Log.i("weather_data_deb", weatherData.toString())
+        }
     }
 
     override fun onResume() {
@@ -36,6 +44,10 @@ class MainActivity : AppCompatActivity() {
             requestLocationPermission()
         } else {
             locationProvider.getUserLocation()
+        } else {
+            weatherDataViewModel.updateWeatherData(
+                48.45, 32.21, "minutely",
+                getString(R.string.weather_api_key))
         }
     }
 
