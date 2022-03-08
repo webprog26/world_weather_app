@@ -10,9 +10,12 @@ import android.os.Bundle
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import com.webprog26.worldweatherapp.view_model.WeatherDataViewModel
 import com.webprog26.worldweatherapp.location.LocationProvider
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var weatherDataViewModel: WeatherDataViewModel
 
     companion object {
         private const val ACCESS_COARSE_LOCATION_PERMISSION_REQUEST_CODE = 1000
@@ -24,9 +27,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        weatherDataViewModel = WeatherDataViewModel()
+        weatherDataViewModel.weatherData.observe(this) { weatherData ->
+
+        }
+        weatherDataViewModel.cityData.observe(this) { city ->
+
+        }
+
         locationProvider = LocationProvider(this)
         locationProvider.lastKnownLocationData.observe(this) { latLng ->
-
+            weatherDataViewModel.updateWeatherData(
+                latLng,
+                getString(R.string.weather_api_key)
+            )
         }
     }
 
@@ -92,11 +106,7 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == ACCESS_COARSE_LOCATION_PERMISSION_REQUEST_CODE
-            && grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED
-        ) {
-            locationProvider.getUserLocation()
-        } else if (grantResults.size == 1 &&
+        if (grantResults.size == 1 &&
             grantResults[0] == PackageManager.PERMISSION_DENIED && shouldRequestPermissionRationale()
         ) {
             showLocationPermissionExplanationDialog()
