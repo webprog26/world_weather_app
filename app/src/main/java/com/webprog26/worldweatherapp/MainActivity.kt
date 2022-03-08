@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import com.webprog26.worldweatherapp.location.LocationProvider
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,15 +18,24 @@ class MainActivity : AppCompatActivity() {
         private const val ACCESS_COARSE_LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
 
+    private lateinit var locationProvider: LocationProvider
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        locationProvider = LocationProvider(this)
+        locationProvider.lastKnownLocationData.observe(this) { latLng ->
+
+        }
     }
 
     override fun onResume() {
         super.onResume()
         if (!isLocationPermissionGranted()) {
             requestLocationPermission()
+        } else {
+            locationProvider.getUserLocation()
         }
     }
 
@@ -85,6 +95,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == ACCESS_COARSE_LOCATION_PERMISSION_REQUEST_CODE
             && grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED
         ) {
+            locationProvider.getUserLocation()
         } else if (grantResults.size == 1 &&
             grantResults[0] == PackageManager.PERMISSION_DENIED && shouldRequestPermissionRationale()
         ) {
