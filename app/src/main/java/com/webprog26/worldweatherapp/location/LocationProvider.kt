@@ -9,7 +9,7 @@ class LocationProvider(private val activity: AppCompatActivity) {
 
     private val _lastKnownLocationData = MutableLiveData<LatLng>()
     val lastKnownLocationData: LiveData<LatLng>
-    get() = _lastKnownLocationData
+        get() = _lastKnownLocationData
 
     private val client by lazy {
         LocationServices.getFusedLocationProviderClient(activity)
@@ -21,13 +21,15 @@ class LocationProvider(private val activity: AppCompatActivity) {
     )
 
     fun getUserLocation() {
-       try {
-           client.lastLocation.addOnSuccessListener { location ->
-                val latLng = LatLng(location.latitude, location.longitude)
-               _lastKnownLocationData.value = latLng
-           }
-       } catch (e: SecurityException) {
-           e.printStackTrace()
-       }
+        try {
+            client.lastLocation.addOnSuccessListener { location ->
+                location?.let {
+                    val latLng = LatLng(location.latitude, location.longitude)
+                    _lastKnownLocationData.value = latLng
+                }
+            }
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+        }
     }
 }

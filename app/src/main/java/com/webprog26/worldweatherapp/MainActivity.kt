@@ -8,7 +8,6 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import com.webprog26.worldweatherapp.view_model.WeatherDataViewModel
@@ -28,13 +27,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        locationProvider = LocationProvider(this)
-        locationProvider.lastKnownLocationData.observe(this) { latLng ->
-
-        }
         weatherDataViewModel = WeatherDataViewModel()
         weatherDataViewModel.weatherData.observe(this) { weatherData ->
-            Log.i("weather_data_deb", weatherData.toString())
+
+        }
+        weatherDataViewModel.cityData.observe(this) { city ->
+
+        }
+
+        locationProvider = LocationProvider(this)
+        locationProvider.lastKnownLocationData.observe(this) { latLng ->
+            weatherDataViewModel.updateWeatherData(
+                latLng,
+                getString(R.string.weather_api_key)
+            )
         }
     }
 
@@ -44,10 +50,6 @@ class MainActivity : AppCompatActivity() {
             requestLocationPermission()
         } else {
             locationProvider.getUserLocation()
-        } else {
-            weatherDataViewModel.updateWeatherData(
-                48.45, 32.21, "minutely",
-                getString(R.string.weather_api_key))
         }
     }
 
@@ -104,11 +106,7 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == ACCESS_COARSE_LOCATION_PERMISSION_REQUEST_CODE
-            && grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED
-        ) {
-            locationProvider.getUserLocation()
-        } else if (grantResults.size == 1 &&
+        if (grantResults.size == 1 &&
             grantResults[0] == PackageManager.PERMISSION_DENIED && shouldRequestPermissionRationale()
         ) {
             showLocationPermissionExplanationDialog()
