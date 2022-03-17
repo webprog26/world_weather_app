@@ -22,7 +22,7 @@ data class WeatherData(
     @SerializedName("timezone") var timezone: String,
 
     @ColumnInfo(name = "timezone_offset")
-    @SerializedName("timezone_offset") var timezoneOffset: Int,
+    @SerializedName("timezone_offset") var timezoneOffset: Long,
 
     @ColumnInfo(name = "current")
     @SerializedName("current") var current: Current,

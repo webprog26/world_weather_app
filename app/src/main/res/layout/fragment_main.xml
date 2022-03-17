@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/refresh_layout"
+    layout_height="match_parent"
+    layout_width="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:id="@+id/pb_loading"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+
+        <LinearLayout
+            android:id="@+id/current_weather_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="16dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_current_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_min_max_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/iv_current_weather_icon"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tv_weather_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="18dp"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_current_city"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:drawableRightCompat="@drawable/ic_place" />
+
+            <TextView
+                android:id="@+id/tv_last_updated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_hourly_forecast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/current_weather_layout"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/daily_forecasts_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rv_hourly_forecast"
+            android:orientation="vertical" />
+
+    </RelativeLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
