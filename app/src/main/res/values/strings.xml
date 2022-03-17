@@ -8,4 +8,9 @@
     <string name="settings_dialog_negative_button_text">No thanks</string>
 
     <string name="weather_api_key">f72e05ed1b9a29ce405527b46e3d72b9</string>
+
+    <string name="current_temp">%1$d &#176;</string>
+    <string name="min_max_temp">%1$d &#176;/%2$d &#176;</string>
+
+    <string name="last_updated_time">Last updated: %1$s</string>
 </resources>

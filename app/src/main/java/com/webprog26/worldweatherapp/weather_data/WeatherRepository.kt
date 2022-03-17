@@ -2,13 +2,10 @@ package com.webprog26.worldweatherapp.weather_data
 
 import android.content.Context
 import android.text.TextUtils
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.webprog26.worldweatherapp.db.WeatherDatabase
 import com.webprog26.worldweatherapp.location.LocationProvider
 import com.webprog26.worldweatherapp.network.WeatherApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback

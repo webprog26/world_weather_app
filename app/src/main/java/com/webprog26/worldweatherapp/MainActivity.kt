@@ -10,12 +10,20 @@ import android.os.Bundle
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import com.webprog26.worldweatherapp.databinding.ActivityMainBinding
 import com.webprog26.worldweatherapp.view_model.WeatherDataViewModel
 import com.webprog26.worldweatherapp.location.LocationProvider
+import com.webprog26.worldweatherapp.ui.MainFragment
+import com.webprog26.worldweatherapp.ui.MainPresenter
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
+
     private lateinit var weatherDataViewModel: WeatherDataViewModel
+
+    private val mainFragment = MainFragment.getInstance()
+    private val mainPresenter = MainPresenter(mainFragment)
 
     companion object {
         private const val ACCESS_COARSE_LOCATION_PERMISSION_REQUEST_CODE = 1000
@@ -25,18 +33,26 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .add(binding.mainFragmentContainer.id, mainFragment).commit()
+        }
 
         weatherDataViewModel = WeatherDataViewModel()
         weatherDataViewModel.weatherData.observe(this) { weatherData ->
-
+            mainPresenter.onWeatherDataAvailable(weatherData)
+            mainPresenter.onLoadingCompleted()
         }
         weatherDataViewModel.cityData.observe(this) { city ->
-
+            mainPresenter.onCurrentCityAvailable(city)
         }
 
         locationProvider = LocationProvider(this)
         locationProvider.lastKnownLocationData.observe(this) { latLng ->
+            mainPresenter.onLoadingStarted()
             weatherDataViewModel.updateWeatherData(
                 latLng,
                 getString(R.string.weather_api_key)
