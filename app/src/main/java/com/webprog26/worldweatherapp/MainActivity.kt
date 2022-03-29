@@ -8,15 +8,20 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import com.webprog26.worldweatherapp.databinding.ActivityMainBinding
 import com.webprog26.worldweatherapp.view_model.WeatherDataViewModel
 import com.webprog26.worldweatherapp.location.LocationProvider
+import com.webprog26.worldweatherapp.network.createWeatherApi
 import com.webprog26.worldweatherapp.ui.MainFragment
 import com.webprog26.worldweatherapp.ui.MainPresenter
+import com.webprog26.worldweatherapp.weather_data.WeatherRepository
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainFragment.OnWeatherDataUpdateRequestedListener {
+
+    private var forceNetworkUpdate: Boolean = false
 
     private lateinit var binding: ActivityMainBinding
 
@@ -41,7 +46,7 @@ class MainActivity : AppCompatActivity() {
                 .add(binding.mainFragmentContainer.id, mainFragment).commit()
         }
 
-        weatherDataViewModel = WeatherDataViewModel()
+        weatherDataViewModel = WeatherDataViewModel(WeatherRepository(createWeatherApi(), WorldWeatherApplication.appContext))
         weatherDataViewModel.weatherData.observe(this) { weatherData ->
             mainPresenter.onWeatherDataAvailable(weatherData)
             mainPresenter.onLoadingCompleted()
@@ -55,8 +60,10 @@ class MainActivity : AppCompatActivity() {
             mainPresenter.onLoadingStarted()
             weatherDataViewModel.updateWeatherData(
                 latLng,
-                getString(R.string.weather_api_key)
+                getString(R.string.weather_api_key),
+                forceNetworkUpdate
             )
+            forceNetworkUpdate = false
         }
     }
 
@@ -65,6 +72,13 @@ class MainActivity : AppCompatActivity() {
         if (!isLocationPermissionGranted()) {
             requestLocationPermission()
         } else {
+            locationProvider.getUserLocation()
+        }
+    }
+
+    override fun onWeatherDataUpdateRequested() {
+        if (isLocationPermissionGranted()) {
+            forceNetworkUpdate = true
             locationProvider.getUserLocation()
         }
     }

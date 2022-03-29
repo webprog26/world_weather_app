@@ -12,29 +12,32 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.net.HttpURLConnection
 
-class WeatherRepository(private val weatherApi: WeatherApi, private val context: Context) {
+class WeatherRepository(private val weatherApi: WeatherApi, context: Context) {
 
     private val database = WeatherDatabase.getInstance(context).weatherDao();
 
     suspend fun updateWeatherData(
         weatherData: MutableLiveData<WeatherData>,
         latLng: LocationProvider.LatLng,
-        apiKey: String
+        apiKey: String,
+        forceNetworkUpdate: Boolean
     ) {
         val cachedWeatherData = database.getWeatherData()
 
-        if (cachedWeatherData != null) {
+        if (cachedWeatherData == null || forceNetworkUpdate) {
+            val weatherDataFromNetwork = weatherApi.getWeatherData(
+                latLng.latitude, latLng.longitude, "minutely", "metric",
+                apiKey
+            )
+
+            weatherData.value = weatherDataFromNetwork
+
+            database.insert(weatherDataFromNetwork)
+        } else {
             weatherData.value = cachedWeatherData
+
         }
 
-        val weatherDataFromNetwork = weatherApi.getWeatherData(
-            latLng.latitude, latLng.longitude, "minutely", "metric",
-            apiKey
-        )
-
-        weatherData.value = weatherDataFromNetwork
-
-        database.insert(weatherDataFromNetwork)
     }
 
     suspend fun updateCityData(

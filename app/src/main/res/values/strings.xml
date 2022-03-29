@@ -10,7 +10,27 @@
     <string name="weather_api_key">f72e05ed1b9a29ce405527b46e3d72b9</string>
 
     <string name="current_temp">%1$d &#176;</string>
-    <string name="min_max_temp">%1$d &#176;/%2$d &#176;</string>
+    <string name="min_max_temp">%1$d&#176;/%2$d&#176;</string>
 
     <string name="last_updated_time">Last updated: %1$s</string>
+
+    <string name="humidity_title">Humidity</string>
+
+    <string name="visibility_text">Visibility: %1$d meters</string>
+
+    <string name="temp_feels_like_text">Feels like: %1$d&#176;</string>
+    <string name="wind_title">Wind</string>
+
+    <string name="wind_direction_north">North</string>
+    <string name="wind_direction_north_west">Northwest</string>
+    <string name="wind_direction_north_east">Northeast</string>
+    <string name="wind_direction_south">South</string>
+    <string name="wind_direction_south_west">Southwest</string>
+    <string name="wind_direction_south_east">Southeast</string>
+    <string name="wind_direction_west">West</string>
+    <string name="wind_direction_east">East</string>
+
+    <string name="wind_direction">Direction: %1$s</string>
+    <string name="wind_speed">Speed: %1$d m/s</string>
+
 </resources>

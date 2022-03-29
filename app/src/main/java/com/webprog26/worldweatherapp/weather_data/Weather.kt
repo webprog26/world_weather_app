@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 
 data class WeatherData(
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     val id: Long = 0L,
 
     @ColumnInfo(name = "lat")
