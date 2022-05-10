@@ -1,24 +1,25 @@
 package com.webprog26.worldweatherapp.utils
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import com.webprog26.worldweatherapp.R
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 const val INCORRECT_ICON_CODE = -1
+const val INCORRECT_WIND_DIRECTION_CODE = -1
 
 fun convertMillisToHhMm(seconds: Long): String {
-    val m = seconds / 60 % 60
-    val h = seconds / (60 * 60) % 24
-    return String.format("%02d:%02d", h, m)
+    val simpleDateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+    return simpleDateFormat.format(Date(seconds * 1000).time)
 }
 
 fun convertMillisToDateString(dateTime: Long): String {
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = (dateTime * 1000)
     val simpleDateFormat = SimpleDateFormat("EEE, MMM dd", Locale.getDefault())
-    return simpleDateFormat.format(calendar.time)
+    return simpleDateFormat.format(Date(dateTime * 1000).time)
 }
 
 @DrawableRes
@@ -82,4 +83,27 @@ fun getWeatherIconRes(iconCode: String): Int {
             INCORRECT_ICON_CODE
         }
     }
+}
+
+@StringRes
+fun getWindDirection(code: Int) : Int {
+    val index = ((code/22.5)+.5).toInt()
+    val windDirectionArray = arrayOf(
+    R.string.wind_direction_north,
+    R.string.wind_direction_north,
+    R.string.wind_direction_north_east,
+    R.string.wind_direction_east,
+    R.string.wind_direction_east,
+    R.string.wind_direction_east,
+    R.string.wind_direction_south_east,
+    R.string.wind_direction_south,
+    R.string.wind_direction_south,
+    R.string.wind_direction_south,
+    R.string.wind_direction_south_west,
+    R.string.wind_direction_west,
+    R.string.wind_direction_west,
+    R.string.wind_direction_west,
+    R.string.wind_direction_north_west,
+    R.string.wind_direction_north)
+    return windDirectionArray[(index % windDirectionArray.size)]
 }

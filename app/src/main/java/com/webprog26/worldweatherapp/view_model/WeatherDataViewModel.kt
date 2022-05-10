@@ -14,7 +14,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 
-class WeatherDataViewModel : ViewModel() {
+class WeatherDataViewModel(val repository: WeatherRepository) : ViewModel() {
 
     private val _cityData = MutableLiveData<City>()
     val cityData: LiveData<City>
@@ -27,18 +27,17 @@ class WeatherDataViewModel : ViewModel() {
 
     fun updateWeatherData(
         latLng: LocationProvider.LatLng,
-        appId: String
+        appId: String,
+        forceNetworkUpdate: Boolean = false
     ) {
-        val weatherRepository =
-            WeatherRepository(createWeatherApi(), WorldWeatherApplication.appContext)
         val weatherDataDeferred = viewModelScope.async {
-            weatherRepository.updateWeatherData(_weatherData, latLng, appId)
+            repository.updateWeatherData(_weatherData, latLng, appId, forceNetworkUpdate)
         }
 
         val cityDataDeferred = viewModelScope.async {
-            weatherRepository.updateCityData(_cityData, latLng, appId) { city ->
+            repository.updateCityData(_cityData, latLng, appId) { city ->
                 viewModelScope.launch {
-                    weatherRepository.saveCityData(city)
+                    repository.saveCityData(city)
                 }
             }
         }

@@ -9,14 +9,13 @@ import com.webprog26.worldweatherapp.utils.convertMillisToHhMm
 import com.webprog26.worldweatherapp.weather_data.Hourly
 
 class HourlyForecastAdapter(
-    private val hourlyForecastList: List<Hourly>,
-    private val timeZoneOffset: Long
+    private val hourlyForecastList: List<Hourly>
 ) : RecyclerView.Adapter<HourlyForecastAdapter.HourlyForecastViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HourlyForecastViewHolder {
         val binding =
             ViewForecastHourlyBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return HourlyForecastViewHolder(binding, timeZoneOffset)
+        return HourlyForecastViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: HourlyForecastViewHolder, position: Int) {
@@ -28,11 +27,10 @@ class HourlyForecastAdapter(
     }
 
     class HourlyForecastViewHolder(
-        private val binding: ViewForecastHourlyBinding,
-        private val timeZoneOffset: Long
+        private val binding: ViewForecastHourlyBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(hourlyForecast: Hourly) {
-            val dateTime = hourlyForecast.dt + timeZoneOffset
+            val dateTime = hourlyForecast.dt
             binding.tvHourlyTime.text = convertMillisToHhMm(dateTime)
             binding.tvHourlyTemp.text =
                 itemView.context.getString(R.string.current_temp, hourlyForecast.temp.toInt())
