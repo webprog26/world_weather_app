@@ -32,6 +32,7 @@ class WeatherDataViewModel(private val repository: WeatherRepository) : ViewMode
         val weatherDataDeferred = viewModelScope.async {
             _weatherData.value = repository.updateWeatherData(latLng,
                 appId, forceNetworkUpdate)
+            Log.i("weather_deb", "${weatherData.value?.daily}")
         }
 
         val cityDataDeferred = viewModelScope.async {
