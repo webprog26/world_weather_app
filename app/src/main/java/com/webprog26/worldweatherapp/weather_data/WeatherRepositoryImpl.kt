@@ -13,9 +13,12 @@ import java.net.HttpURLConnection
 interface WeatherRepository {
 
     suspend fun updateWeatherData(
-        latLng: LocationProvider.LatLng,
-        apiKey: String,
-        forceNetworkUpdate: Boolean
+        latLng: LocationProvider.LatLng= LocationProvider.LatLng(
+            0.0,
+            0.0
+        ),
+        apiKey: String = "",
+        forceNetworkUpdate: Boolean = false
     ): WeatherData
 
     suspend fun updateCityData(
