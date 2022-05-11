@@ -8,16 +8,16 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import com.webprog26.worldweatherapp.databinding.ActivityMainBinding
+import com.webprog26.worldweatherapp.db.WeatherDatabase
 import com.webprog26.worldweatherapp.view_model.WeatherDataViewModel
 import com.webprog26.worldweatherapp.location.LocationProvider
 import com.webprog26.worldweatherapp.network.createWeatherApi
 import com.webprog26.worldweatherapp.ui.MainFragment
 import com.webprog26.worldweatherapp.ui.MainPresenter
-import com.webprog26.worldweatherapp.weather_data.WeatherRepository
+import com.webprog26.worldweatherapp.weather_data.WeatherRepositoryImpl
 
 class MainActivity : AppCompatActivity(), MainFragment.OnWeatherDataUpdateRequestedListener {
 
@@ -46,7 +46,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnWeatherDataUpdateReques
                 .add(binding.mainFragmentContainer.id, mainFragment).commit()
         }
 
-        weatherDataViewModel = WeatherDataViewModel(WeatherRepository(createWeatherApi(), WorldWeatherApplication.appContext))
+        weatherDataViewModel = WeatherDataViewModel(WeatherRepositoryImpl(createWeatherApi(),
+            WeatherDatabase.getInstance(WorldWeatherApplication.appContext).weatherDao()))
         weatherDataViewModel.weatherData.observe(this) { weatherData ->
             mainPresenter.onWeatherDataAvailable(weatherData)
             mainPresenter.onLoadingCompleted()
