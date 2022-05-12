@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.LocationServices
 import com.webprog26.worldweatherapp.databinding.ActivityMainBinding
 import com.webprog26.worldweatherapp.db.WeatherDatabase
 import com.webprog26.worldweatherapp.view_model.WeatherDataViewModel
@@ -20,6 +21,10 @@ import com.webprog26.worldweatherapp.ui.MainPresenter
 import com.webprog26.worldweatherapp.weather_data.WeatherRepositoryImpl
 
 class MainActivity : AppCompatActivity(), MainFragment.OnWeatherDataUpdateRequestedListener {
+
+    private val locationProviderClient by lazy {
+        LocationServices.getFusedLocationProviderClient(this)
+    }
 
     private var forceNetworkUpdate: Boolean = false
 
@@ -56,7 +61,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnWeatherDataUpdateReques
             mainPresenter.onCurrentCityAvailable(city)
         }
 
-        locationProvider = LocationProvider(this)
+        locationProvider = LocationProvider()
         locationProvider.lastKnownLocationData.observe(this) { latLng ->
             mainPresenter.onLoadingStarted()
             weatherDataViewModel.updateWeatherData(
@@ -73,14 +78,14 @@ class MainActivity : AppCompatActivity(), MainFragment.OnWeatherDataUpdateReques
         if (!isLocationPermissionGranted()) {
             requestLocationPermission()
         } else {
-            locationProvider.getUserLocation()
+            locationProvider.getUserLocation(locationProviderClient)
         }
     }
 
     override fun onWeatherDataUpdateRequested() {
         if (isLocationPermissionGranted()) {
             forceNetworkUpdate = true
-            locationProvider.getUserLocation()
+            locationProvider.getUserLocation(locationProviderClient)
         }
     }
 
